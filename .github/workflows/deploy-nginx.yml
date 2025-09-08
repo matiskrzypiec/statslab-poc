@@ -20,14 +20,55 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v3
+        with:
+          version: 'v1.29.6'
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: 'v3.17.0'
+
       - name: Setup kubeconfig for runner
         run: |
-          # Setup kubeconfig using the script provided in runner
-          if [ -f /opt/scripts/setup-kubeconfig.sh ]; then
-            bash /opt/scripts/setup-kubeconfig.sh
-          else
-            echo "Using existing kubeconfig from service account"
-          fi
+          # Create kubeconfig manually in /tmp (writable directory)
+          mkdir -p /tmp/.kube
+          
+          # Get Kubernetes API server details
+          API_SERVER="https://$KUBERNETES_SERVICE_HOST:$KUBERNETES_SERVICE_PORT"
+          TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+          NAMESPACE=$(cat /var/run/secrets/kubernetes.io/serviceaccount/namespace || echo "default")
+          
+          # Create kubeconfig
+          cat > /tmp/.kube/config << EOF
+          apiVersion: v1
+          kind: Config
+          current-context: runner-context
+          contexts:
+          - context:
+              cluster: local-cluster
+              namespace: $NAMESPACE
+              user: runner-user
+            name: runner-context
+          clusters:
+          - cluster:
+              certificate-authority: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+              server: $API_SERVER
+            name: local-cluster
+          users:
+          - name: runner-user
+            user:
+              token: $TOKEN
+          EOF
+          
+          # Set KUBECONFIG environment variable
+          export KUBECONFIG=/tmp/.kube/config
+          echo "KUBECONFIG=/tmp/.kube/config" >> $GITHUB_ENV
+          
+          # Test kubectl connection
+          kubectl version --client
+          echo "✅ kubectl configured successfully"
 
       - name: Generate Helm template and deploy
         run: |
