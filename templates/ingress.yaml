@@ -7,7 +7,7 @@ metadata:
     nginx.ingress.kubernetes.io/rewrite-target: /
 spec:
   rules:
-    - host: {{ .Values.pipelineID }}.dev.statslab.local
+    - host: {{ .Values.pipelineID }}.dev.statslab.lan
       http:
         paths:
           - path: /
