@@ -46,7 +46,9 @@ jobs:
           fi
 
           echo "Using PIPELINE_ID: $PIPELINE_ID"
-
+          
+          ls -la
+          
           helm template my-nginx ./statslab-poc \
             --namespace default \
             --set h1Content="${{ github.event.inputs.h1Content }}" \
