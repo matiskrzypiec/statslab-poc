@@ -107,7 +107,7 @@ jobs:
           
           echo "🚀 Deployment completed!"
           echo "📦 Namespace: $NAMESPACE"
-          echo "🌐 Application URL: https://${PIPELINE_ID}.dev.statslab.local"
+          echo "🌐 Application URL: https://${PIPELINE_ID}.dev.statslab.lan"
           echo ""
           echo "📊 Pod status:"
           kubectl get pods -n "$NAMESPACE" -l app.kubernetes.io/instance=nginx-${PIPELINE_ID}
