@@ -1,7 +1,5 @@
 namespace: default
 h1Content: "Hello World from Kubernetes + Nginx + Helm + Ingress!"
-ingress:
-  hostTemplate: "{{ .Values.pipelineID }}.dev.statslab.local"
 replicaCount: 1
 pipelineID: "default" # wartość domyślna, nadpisywana z workflow
 
