@@ -1,0 +1,5 @@
+apiVersion: v2
+name: nginx-hello
+description: A Helm chart for Nginx Hello World with Ingress
+version: 0.1.0
+appVersion: "1.25"
