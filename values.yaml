@@ -4,3 +4,7 @@ ingress:
   hostTemplate: "{{ .Values.pipelineID }}.dev.statslab.local"
 replicaCount: 1
 pipelineID: "default" # wartość domyślna, nadpisywana z workflow
+
+image:
+  repository: nginx
+  tag: "1.25"
